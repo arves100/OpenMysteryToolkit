@@ -6,6 +6,18 @@ enum class AnimationLayer
 	IDLE = 0,
 };
 
+enum class Directions
+{
+	UP = 0,
+	DOWN,
+	LEFT,
+	RIGHT,
+	UP_LEFT,
+	UP_RIGHT,
+	DOWN_LEFT,
+	DOWN_RIGHT,
+};
+
 class CMonster
 {
 public:
@@ -13,13 +25,12 @@ public:
 
 	void LoadSprite(ncine::SceneNode* scene, const char* name, unsigned int width, unsigned int height);
 	void Update();
-	void AddIdleAnimation(float speed, size_t length);
 	
-	void Move(float x, float y) { m_lpSprite->move(x, y); }
-	void Move(ncine::Vector2f vec) { m_lpSprite->move(vec); }
+	void AddAnimation(AnimationLayer layer, float speed, size_t length, int offsetX, int offsetY);
+
+	void Move(Directions dir);
 
 	nctl::String GetName() { return m_szName; };
-	ncine::Vector2<int> GetSize() { return m_v2Size; };
 
 protected:
 	nctl::UniquePtr<ncine::AnimatedSprite> m_lpSprite;

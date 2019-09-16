@@ -15,20 +15,19 @@ void CPlayer::onInit()
 	ncine::SceneNode &rootNode = ncine::theApplication().rootNode();
 
 	monster = nctl::makeUnique<CMonster>();
-	monster->LoadSprite(&rootNode, "monster1", 20, 20);
-	monster->AddIdleAnimation(0.3f, 2);
+	monster->LoadSprite(&rootNode, "monster1", 25, 25);
+	monster->AddAnimation(AnimationLayer::IDLE, 3.0f, 3, 0, 25);
 }
 
 void CPlayer::onFrameStart()
 {
 	monster->Update();
 
-
 	const ncine::KeyboardState &keyState = ncine::theApplication().inputManager().keyboardState();
 
 	if (keyState.isKeyDown(ncine::KeySym::LEFT))
 	{
-	
+
 	}
 	else if (keyState.isKeyDown(ncine::KeySym::UP))
 	{
