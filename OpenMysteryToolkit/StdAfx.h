@@ -11,4 +11,7 @@
 
 #include <nctl/UniquePtr.h>
 
+#include <algorithm>
+#include <map>
+
 #endif // OMT_STDAFX_H

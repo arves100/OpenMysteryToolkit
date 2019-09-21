@@ -16,7 +16,9 @@ void CPlayer::onInit()
 
 	monster = nctl::makeUnique<CMonster>();
 	monster->LoadSprite(&rootNode, "monster1", 25, 25);
-	monster->AddAnimation(AnimationLayer::IDLE, 3.0f, 3, 0, 25);
+	monster->AddAnimation(AnimationLayer::IDLE_DOWN, 3.0f, 2, 0, 0);
+	monster->AddAnimation(AnimationLayer::MOVE_DOWN, 3.0f, 3, 0, 25);
+	monster->SetPosition(200.0f, 200.0f);
 }
 
 void CPlayer::onFrameStart()
@@ -35,7 +37,7 @@ void CPlayer::onFrameStart()
 	}
 	else if (keyState.isKeyDown(ncine::KeySym::DOWN))
 	{
-		
+		monster->Move(Directions::DOWN);
 	}
 	else if (keyState.isKeyDown(ncine::KeySym::RIGHT))
 	{

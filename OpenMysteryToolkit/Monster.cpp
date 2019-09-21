@@ -3,7 +3,15 @@
 
 CMonster::CMonster()
 {
+	m_bIsBuilt = false;
 
+	ncine::RectAnimation defaultAnimation = ncine::RectAnimation(0.0f, ncine::RectAnimation::LoopMode::DISABLED, ncine::RectAnimation::RewindMode::FROM_START);
+	defaultAnimation.addRect(0, 0, 0, 0);
+
+	for (int i = 0; i < (int)AnimationLayer::MOVE_UP_RIGHT; i++)
+	{
+		m_mAnimations.insert_or_assign((AnimationLayer)i, defaultAnimation);
+	}
 }
 
 void CMonster::LoadSprite(ncine::SceneNode* scene, const char* name, unsigned int width, unsigned int height)
@@ -13,32 +21,53 @@ void CMonster::LoadSprite(ncine::SceneNode* scene, const char* name, unsigned in
 
 	m_szName = name;
 	m_v2Size = ncine::Vector2<int>(width, height);
-
-	m_lpSprite->setPosition(200.0f, 200.0f);
 }
 
 void CMonster::AddAnimation(AnimationLayer layer, float speed, size_t length, int offsetX, int offsetY)
 {
-	// NOTE!!! Due to nCine not supporting loading multiple animations in one, this code will break if someone calls AddAnimation(1, ...)
+	// We need to use ncine::Array in order to have full control of our animations
 
-	nctl::UniquePtr<ncine::RectAnimation> animation = nctl::makeUnique<ncine::RectAnimation>(1.0f / speed, ncine::RectAnimation::LoopMode::ENABLED, ncine::RectAnimation::RewindMode::FROM_START);
+	ncine::RectAnimation::LoopMode loopMode = ncine::RectAnimation::LoopMode::DISABLED;
+
+	if (layer == AnimationLayer::IDLE_UP || layer == AnimationLayer::IDLE_DOWN || layer == AnimationLayer::IDLE_LEFT || layer == AnimationLayer::IDLE_RIGHT)
+		loopMode = ncine::RectAnimation::LoopMode::ENABLED;
+
+	ncine::RectAnimation animation(1.0f / speed, loopMode, ncine::RectAnimation::RewindMode::FROM_START);
 	
 	for (size_t i = 0; i < length; i++)
-		animation->addRect((i * m_v2Size.x) + offsetX, offsetY, m_v2Size.x, m_v2Size.y);
+		animation.addRect((i * m_v2Size.x) + offsetX, offsetY, m_v2Size.x, m_v2Size.y);
 
-	m_lpSprite->addAnimation(nctl::move(animation));
+	m_mAnimations.insert_or_assign(layer, animation);
 
-	if (layer == AnimationLayer::IDLE)
+	m_bIsBuilt = false;
+}
+
+void CMonster::Build()
+{
+	m_lpSprite->clearAnimations();
+
+	for (int i = 0; i < (int)AnimationLayer::MOVE_UP_RIGHT; i++)
 	{
-		m_lpSprite->setAnimation((int)AnimationLayer::IDLE);
-		m_lpSprite->setFrame(0);
+		m_lpSprite->addAnimation(nctl::makeUnique<ncine::RectAnimation>(m_mAnimations.at((AnimationLayer)i)));
 	}
+
+	m_lpSprite->setAnimation((int)AnimationLayer::IDLE_DOWN); // Default animation
+	m_lpSprite->setFrame(0);
+	m_lpSprite->setPaused(false);
+
+	m_bIsBuilt = true;
 }
 
 void CMonster::Move(Directions dir)
 {
+	// NOTE: This should be coordinated with the main game logic
+
 	if (dir == Directions::DOWN)
 	{
+		m_lpSprite->setPaused(true);
+		m_lpSprite->setAnimation((int)AnimationLayer::MOVE_DOWN);
+		m_lpSprite->setFrame(0);
+		m_lpSprite->setPaused(false);
 		m_lpSprite->move(0, -1);
 	}
 	else if (dir == Directions::UP)
@@ -55,17 +84,8 @@ void CMonster::Move(Directions dir)
 	}
 }
 
-	/*nctl::UniquePtr<ncine::RectAnimation> animation = nctl::makeUnique<ncine::RectAnimation>(0.2f, ncine::RectAnimation::LoopMode::ENABLED, ncine::RectAnimation::RewindMode::FROM_START);
-
-	animation->addRect(0, 0, width, height);
-	animation->addRect(20, 0, 20, 20);
-
-	m_lpSprite->addAnimation(nctl::move(animation));
-	m_lpSprite->setAnimation((int)AnimationLayer::IDLE);
-	m_lpSprite->setFrame(0);
-	m_lpSprite->setPaused(true);*/
-
 void CMonster::Update()
 {
-	m_lpSprite->setPaused(false);
+	if (!m_bIsBuilt)
+		Build();
 }
