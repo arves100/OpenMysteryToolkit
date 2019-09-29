@@ -15,7 +15,4 @@ A work-in-progress toolkit for creating Mystery Dungeon games.
 - nCine, game engine used for the game
 
 ## Building
-The game would support CMake in the future, for now I'm using the sln file as it's easier to manage at this time.
-
-## Tested platforms
-- Windows with Visual Studio 2019
+Use CMake
