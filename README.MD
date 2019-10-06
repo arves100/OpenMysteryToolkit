@@ -15,4 +15,4 @@ A work-in-progress toolkit for creating Mystery Dungeon games.
 - nCine, game engine used for the game
 
 ## Building
-Use CMake
+Check out the page [Building OpenMysteryToolkit](https://github.com/arves100/OpenMysteryToolkit/wiki/Building)
