@@ -1,91 +1,94 @@
+/*+===================================================================
+	File:		Monster.cpp
+
+	Summary:	A generic monster, which could be rather a computer or the player.
+
+	This file is part of OpenMysteryToolkit. Copyright © 2019 Arves100.
+	For more information, visit: https://www.github.com/arves100/OpenMysteryToolkit
+===================================================================+*/
+
 #include "StdAfx.h"
 #include "Monster.h"
 
-CMonster::CMonster()
+CMonster::CMonster() : m_strName(""), m_vSize(0, 0)
 {
-	m_bIsBuilt = false;
-
-	ncine::RectAnimation defaultAnimation = ncine::RectAnimation(0.0f, ncine::RectAnimation::LoopMode::DISABLED, ncine::RectAnimation::RewindMode::FROM_START);
-	defaultAnimation.addRect(0, 0, 0, 0);
-
-	for (int i = 0; i < (int)AnimationLayer::MOVE_UP_RIGHT; i++)
-	{
-		m_mAnimations.insert_or_assign((AnimationLayer)i, defaultAnimation);
-	}
 }
 
-void CMonster::LoadSprite(ncine::SceneNode* scene, const char* name, unsigned int width, unsigned int height)
+void CMonster::LoadSprite(ncine::SceneNode* cSceneNode, const char* szName, unsigned int unWidth, unsigned int unHeight)
 {
-	m_lpTexture = nctl::makeUnique<ncine::Texture>((ncine::IFile::dataPath() + "test/monsters/" + name + "/sprites.png").data());
-	m_lpSprite = nctl::makeUnique<ncine::AnimatedSprite>(scene, m_lpTexture.get());
+	// Create the texture and the animation
+	m_qpTexture = nctl::makeUnique<ncine::Texture>((ncine::IFile::dataPath() + "test/monsters/" + szName + "/sprites.png").data());
+	m_qpSprite = nctl::makeUnique<ncine::AnimatedSprite>(cSceneNode, m_qpTexture.get());
 
-	m_szName = name;
-	m_v2Size = ncine::Vector2<int>(width, height);
+	m_strName = szName;
+	m_vSize = ncine::Vector2<int>(unWidth, unHeight);
+
+	/*
+		Since we have access to ncine::AnimatedSprite data, we now have to append all the dummy animations that the Monster could use,
+		which will allow us to "add" (replate the dummy animation with the real one) any animation we want.
+
+		I would have prefered a map but in this case, only the Vector is used.
+	*/
+	m_qpSprite->clearAnimations();
+
+	nctl::Array<nctl::UniquePtr<ncine::RectAnimation>>& vAnimations = m_qpSprite->animations();
+	vAnimations.setSize(static_cast<unsigned int>(AnimationLayers::TotalAnimations));
+
+	assert(m_qpSprite->numAnimations() == static_cast<unsigned int>(AnimationLayers::TotalAnimations));
 }
 
-void CMonster::AddAnimation(AnimationLayer layer, float speed, size_t length, int offsetX, int offsetY)
+void CMonster::AddAnimation(AnimationLayers eLayer, float fSpeed, int nAnimationFrames, int nImageOffsetX, int nImageOffsetY)
 {
-	// We need to use ncine::Array in order to have full control of our animations
+	if (eLayer == AnimationLayers::TotalAnimations || nAnimationFrames < 1)
+		return;
 
-	ncine::RectAnimation::LoopMode loopMode = ncine::RectAnimation::LoopMode::DISABLED;
+	ncine::RectAnimation::LoopMode eLoopMode = ncine::RectAnimation::LoopMode::DISABLED;
 
-	if (layer == AnimationLayer::IDLE_UP || layer == AnimationLayer::IDLE_DOWN || layer == AnimationLayer::IDLE_LEFT || layer == AnimationLayer::IDLE_RIGHT)
-		loopMode = ncine::RectAnimation::LoopMode::ENABLED;
+	if (eLayer >= AnimationLayers::Idle_Down && eLayer <= AnimationLayers::Idle_DownRight)
+		eLoopMode = ncine::RectAnimation::LoopMode::ENABLED;
 
-	ncine::RectAnimation animation(1.0f / speed, loopMode, ncine::RectAnimation::RewindMode::FROM_START);
+	// nCine fastest speed range is 0.0f, not 1.0f as the user should pass in configuration files.
+	nctl::UniquePtr<ncine::RectAnimation> qpAnimation = nctl::makeUnique<ncine::RectAnimation> (1.0f / fSpeed, eLoopMode, ncine::RectAnimation::RewindMode::FROM_START);
 	
-	for (size_t i = 0; i < length; i++)
-		animation.addRect((i * m_v2Size.x) + offsetX, offsetY, m_v2Size.x, m_v2Size.y);
+	for (int nCurrentAnimation = 0; nCurrentAnimation < nAnimationFrames; nCurrentAnimation++)
+		qpAnimation->addRect((nCurrentAnimation * m_vSize.x) + nImageOffsetX, nImageOffsetY, m_vSize.x, m_vSize.y);
 
-	m_mAnimations.insert_or_assign(layer, animation);
-
-	m_bIsBuilt = false;
+	// master branch of nCine does not support this yet.
+	m_qpSprite->animations().insertAt(static_cast<unsigned int>(eLayer), nctl::move(qpAnimation));
 }
 
-void CMonster::Build()
+void CMonster::ChangeAnimation(AnimationLayers eAnimation)
 {
-	m_lpSprite->clearAnimations();
-
-	for (int i = 0; i < (int)AnimationLayer::MOVE_UP_RIGHT; i++)
-	{
-		m_lpSprite->addAnimation(nctl::makeUnique<ncine::RectAnimation>(m_mAnimations.at((AnimationLayer)i)));
-	}
-
-	m_lpSprite->setAnimation((int)AnimationLayer::IDLE_DOWN); // Default animation
-	m_lpSprite->setFrame(0);
-	m_lpSprite->setPaused(false);
-
-	m_bIsBuilt = true;
+	m_qpSprite->setAnimationIndex(static_cast<unsigned int>(eAnimation));
+	m_qpSprite->setFrame(0);
+	m_qpSprite->setPaused(false);
 }
 
-void CMonster::Move(Directions dir)
+void CMonster::Move(Directions eDir)
 {
 	// NOTE: This should be coordinated with the main game logic
 
-	if (dir == Directions::DOWN)
+	if (eDir == Directions::Down)
 	{
-		m_lpSprite->setPaused(true);
-		m_lpSprite->setAnimation((int)AnimationLayer::MOVE_DOWN);
-		m_lpSprite->setFrame(0);
-		m_lpSprite->setPaused(false);
-		m_lpSprite->move(0, -1);
+		// Change the animation
+		ChangeAnimation(AnimationLayers::Move_Down);
+		m_qpSprite->move(0, -1);
 	}
-	else if (dir == Directions::UP)
+	else if (eDir == Directions::Up)
 	{
-		m_lpSprite->move(0, 1);
+		m_qpSprite->move(0, 1);
 	}
-	else if (dir == Directions::LEFT)
+	else if (eDir == Directions::Left)
 	{
-		m_lpSprite->move(-1, 0);
+		m_qpSprite->move(-1, 0);
 	}
-	else if (dir == Directions::RIGHT)
+	else if (eDir == Directions::Right)
 	{
-		m_lpSprite->move(1, 0);
+		m_qpSprite->move(1, 0);
 	}
 }
 
 void CMonster::Update()
 {
-	if (!m_bIsBuilt)
-		Build();
+
 }
