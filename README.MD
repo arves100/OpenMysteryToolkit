@@ -3,7 +3,7 @@ A kit for making "Mystery Dungeon" styled RPG games.
 
 ## Dependences
 - [ncine](https://ncine.github.io/): 2D game engine used for the player
-- [nlohmann's json (shipped)](https://github.com/nlohmann/json]: JSON parser used in player
+- [nlohmann's json](https://github.com/nlohmann/json): JSON parser used in player
 - [pybind11](https://github.com/pybind/pybind11): python library that powers the scripting engine
 
 ## Building
@@ -13,7 +13,7 @@ This instructions performs an  nCine build without Tests and with disabled Lua s
 
 If you need to use debug builds you also need to build nCine as debug.
 
-* Download nCline
+* Download [nCline](https://github.com/nCine/ncline-artifacts/tree/master)
 * type "ncline download libs -artifact"
 * type "ncline set -branch develop" (we use experimental features)
 * type "ncline download engine"
@@ -21,7 +21,7 @@ If you need to use debug builds you also need to build nCine as debug.
 * type "ncline conf engine"
 * type "ncline build engine release"
 * Clone OpenMysteryToolkit repository
-* Clone OpenMysteryToolkit-data repository
+* Clone [OpenMysteryToolkit-data](https://github.com/arves100/OpenMysteryToolkit-data) repository
 * type "ncline set game OpenMysteryToolkit"
 * type "ncline conf game"
 * type "ncline build game release"
