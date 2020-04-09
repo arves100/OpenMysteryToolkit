@@ -76,11 +76,7 @@ void GamePlayer::onPreInit(nc::AppConfiguration &config)
 				return;
 			}
 
-			//config.windowTitle = nctl::String().format("%s", nameIt->value.GetString());
-			//, versionIt->value.GetDouble());
-
-			config.windowTitle = nameIt->value.GetString();
-			config.windowTitle += " " +  nctl::String().format("%.1f", versionIt->value.GetDouble());
+			config.windowTitle = nctl::String(nameIt->value.GetStringLength() * 3).format("%s %.1f", nameIt->value.GetString(), versionIt->value.GetDouble());
 
 			if (document.HasMember("icon"))
 			{

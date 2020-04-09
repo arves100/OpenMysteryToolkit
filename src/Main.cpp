@@ -11,7 +11,9 @@
 #include <winbase.h> // LocalFree, FORMAT_*****
 #include <shellapi.h> // CommandLineToArgvW
 #include <WinUser.h> // MessageBoxA
+#include <combaseapi.h> // CoInitialize
 #undef DELETE // Windows bad macros
+#undef ERROR
 #include <stdlib.h>
 #include <string>
 #elif !NCINE_WITH_QT5
@@ -72,6 +74,8 @@ static int ConversionFailed(int i)
 
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int)
 {
+	CoInitializeEx(nullptr, COINIT_MULTITHREADED); // Fixes CoInitialize was not called (objact.cxx)
+
 	// Windows does not provide argc, argv and it doesn't provide an ANSI CommandLine parsing
 	// In this function we get all the arguments and perform a conversion to ANSI strings
 	// in order to call "main" like the other platforms.
@@ -118,6 +122,9 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int)
 	int retCode = main(argc, argvA);
 
 	free(argvA);
+
+	CoUninitialize();
+
 	return retCode;
 }
 
