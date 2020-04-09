@@ -3,7 +3,7 @@ A kit for making "Mystery Dungeon" styled RPG games.
 
 ## Dependences
 - [ncine](https://ncine.github.io/): 2D game engine used for the player
-- [nlohmann's json](https://github.com/nlohmann/json): JSON parser used in player
+- [RapidJSON](https://github.com/Tencent/rapidjson): JSON parser used in player
 - [pybind11](https://github.com/pybind/pybind11): python library that powers the scripting engine
 
 ## Building
