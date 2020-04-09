@@ -43,6 +43,8 @@ add_executable(${PACKAGE_EXE_NAME} WIN32 ${PACKAGE_SOURCES})
 include(package_generated_sources)
 target_sources(${PACKAGE_EXE_NAME} PRIVATE ${GENERATED_SOURCES})
 
+include(omt_dependences)
+
 if(NOT DEFAULT_DATA_DIR_DIST) # Don't set the startup project if it wouldn't find the data directory
 	set_property(DIRECTORY ${CMAKE_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PACKAGE_EXE_NAME})
 endif()
@@ -51,7 +53,10 @@ target_include_directories(${PACKAGE_EXE_NAME} PRIVATE ${PACKAGE_INCLUDE_DIRS})
 if(IS_DIRECTORY ${GENERATED_INCLUDE_DIR})
 	target_include_directories(${PACKAGE_EXE_NAME} PRIVATE ${GENERATED_INCLUDE_DIR})
 endif()
-target_link_libraries(${PACKAGE_EXE_NAME} PRIVATE ncine::ncine_main ncine::ncine)
+
+#target_link_libraries(${PACKAGE_EXE_NAME} PRIVATE ncine::ncine_main ncine::ncine)
+target_link_libraries(${PACKAGE_EXE_NAME} PRIVATE ncine::ncine)
+
 if(WIN32 AND NCINE_WTH_QT5)
 	target_link_libraries(${PACKAGE_EXE_NAME} PRIVATE Qt5::WinMain)
 elseif(MINGW)

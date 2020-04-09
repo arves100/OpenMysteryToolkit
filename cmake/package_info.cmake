@@ -9,6 +9,7 @@ set(PACKAGE_REVERSE_DNS "it.arves100.openmysterytoolkit.player")
 set(PACKAGE_INCLUDE_DIRS include)
 
 set(PACKAGE_SOURCES
-	include/Main.h
+	include/GamePlayer.h
+	src/GamePlayer.cpp
 	src/Main.cpp
 )
