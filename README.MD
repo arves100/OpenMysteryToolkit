@@ -52,7 +52,7 @@ any extra content.
 
 ### Generic
 - [ ] Formula parser
-- [ ] Icon switcher/game.json parser
+- [x] Icon switcher/game.json parser
 - [ ] Basic scripting system by loading game.py
 
 ### Combat system
