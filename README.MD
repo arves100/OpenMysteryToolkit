@@ -1,67 +1,58 @@
-# Open Mystery Toolkit
-A kit for making "Mystery Dungeon" styled RPG games.
+# OpenMysteryToolkit
 
-## Dependences
-- [ncine](https://ncine.github.io/): 2D game engine used for the player
-- [RapidJSON](https://github.com/Tencent/rapidjson): JSON parser used in player
-- [pybind11](https://github.com/pybind/pybind11): python library that powers the scripting engine
+Open source Mystery Dungeon clone powered by [nCine](https://github.com/ncine/)
 
 ## Building
-NOTE: Using nCline is recommended.
 
-This instructions performs an  nCine build without Tests and with disabled Lua support (As we use python instead).
+### nCine setup
 
-If you need to use debug builds you also need to build nCine as debug.
+Download [nCline](https://github.com/nCine/ncline-artifacts).
 
-* Download [nCline](https://github.com/nCine/ncline-artifacts/tree/master)
-* type "ncline download libs -artifact"
-* type "ncline set -branch develop" (we use experimental features)
-* type "ncline download engine"
-* type "ncline set -cmake-args "-DNCINE_BUILD_TESTS=OFF -DNCINE_WITH_LUA=OFF" "
-* type "ncline conf engine"
-* type "ncline build engine release"
-* Clone OpenMysteryToolkit repository
-* Clone [OpenMysteryToolkit-data](https://github.com/arves100/OpenMysteryToolkit-data) repository
-* type "ncline set game OpenMysteryToolkit"
-* type "ncline conf game"
-* type "ncline build game release"
+Clone this repo and the [data repo](https://github.com/arves100/openmysterytoolkit-data) on the same root directory.
 
-## Roadmap
-NOTE: This defines the basic roadmap for having a playable mystery dungeon game without
-any extra content.
+Setup the game as omt by running the following command:
 
-### Dungeon
-- [ ] Parse dungeon from dungeons.json
-- [ ] Generate dungeon floor and walls (one block)
-- [ ] Multiple block generation
-- [ ] Generate connection roads
-- [ ] Fill up roads
-- [ ] Entities and objects
-- [ ] Special terrains (with special requirement to use)
-- [ ] Hidden or special objects
-- [ ] Special entity or object generation for missions
-- [ ] Switch to special floor in special situations (eg: mission)
-- [ ] Scripting (when dungeon is entered, when dungeon is exited)
+`ncline set -game openmysterytoolkit`
 
-### Entities
-- [ ] Set entity types/class from entities_types.json
-- [ ] Set entity information from entities.json
-- [ ] Set custom status from statuses.json (HP, MP, ...)
-- [ ] Parse entity info and animations (entities/???.png)
-- [ ] Generic entity conditions (when an entity can die, how many blocks can it travel)
+If you are using Visual Studio 2022, make sure to let nCline know by running the following command:
 
-### Generic
-- [ ] Formula parser
-- [x] Icon switcher/game.json parser
-- [ ] Basic scripting system by loading game.py
+`ncline set -vs2022`
 
-### Combat system
-- [ ] Parse move types and moves from moves_types.json and moves.json
-- [ ] Parse move generic formula from moves_formula.txt
-- [ ] Attack with animations
-- [ ] Add moves learnable by
-- [ ] Moves formula and animations (particles and attack animation)
-- [ ] Moves conditions (what special thing does this move give me, can I still use this move?)
+Download and build ncine by typing this commands:
 
-## Contact
-You can connect with me via email (arves100 at gmail)
+```bash
+ncline download engine -artifact
+```
+
+### Dependencies setup
+
+The project also requires the following dependencies:
+
+- Pybind11
+- Python3
+- EnTT
+
+You can get those by your package manager or by using [vcpkg](https://github.com/microsoft/vcpkg).
+
+You can configure ncline to use vcpkg by typing the following command:
+
+`ncline set -cmake-args -DCMAKE_TOOLCHAIN_FILE=[vcpkg root]/scripts/buildsystems/vcpkg.cmake`
+
+### Game configuration
+
+Finally, configure the game project:
+
+`ncline conf game`
+
+You should now have a directory called `openmysterytoolkit-build` which inside you can build the project
+like an usual C++ project.
+
+**NOTE:** If you use vcpkg, ncline doesn't support cmake arguments for the game project, therefore you have to manually configure the project:
+
+```bash
+rmdir /s/q OpenMysteryToolkit-build
+mkdir OpenMysteryToolkit-build
+cmake -S "OpenMysteryToolkit" -B "OpenMysteryToolkit-build" -G "[your compiler]" -A x64 -DCMAKE_TOOLCHAIN_FILE=[vcpkg root]/scripts/buildsystems/vcpkg.cmake -D nCine_DIR="[your ncine directory]"
+```
+
+You can view your ncine directory by opening the file `ncline.ini`

@@ -1,115 +1,203 @@
+set(NCPROJECT_NAME "OpenMysteryToolkit")
+set(NCPROJECT_EXE_NAME "omt")
+set(NCPROJECT_VENDOR "Arves100")
+set(NCPROJECT_COPYRIGHT "Copyright ©2022 ${NCPROJECT_VENDOR}")
+set(NCPROJECT_DESCRIPTION "An open source mystery dungeon viewer")
+set(NCPROJECT_HOMEPAGE "https://www.scaminc.org/schifezze/pmu")
+set(NCPROJECT_REVERSE_DNS "org.scaminc.pmu")
+set(NCPROJECT_VERSION "0.1dev")
+
+set(NCPROJECT_INCLUDE_DIRS src)
+
+set(DB_FILES
+	abilitydb.h
+	abilitydb.cpp
+    gameinfo.cpp
+    gameinfo.h
+	spelldb.h
+	spelldb.cpp
+	dungeondb.cpp
+	dungeondb.h
+	monsterdb.h
+	monsterdb.cpp
+	itemdb.h
+	itemdb.cpp
+	mapdb.cpp
+	mapdb.h
+	loader.h
+)
+
+set(PYTHON_FILES
+    link.h
+    inc.h
+    omt.cpp
+    modules.h
+    omt.h
+)
+
+set(PYTHON_MODULES_FILES
+    constants.cpp
+    entity.cpp
+    flags.cpp
+    switches.cpp
+    system.cpp
+	log.cpp
+)
+
+set(PYTHON_CLASS_FILES
+	player.cpp
+	entity.cpp
+	map.cpp
+	dungeon.cpp
+	map.h
+	player.h
+	dungeon.h
+	entity.h
+	monster.h
+	monster.cpp
+)
+
+set(ABSTRACT_FILE 
+    ISystem.h
+	IDb.h
+)
+
+set (DEF_FILES
+    defaults.h
+    direction.h
+    gender.h
+    item.h
+    statuslink.h
+    cycleinfo.h
+    scriptactivation.h
+    stats.h
+	deftable.h
+	ability.h
+	curve.h
+	monsterinfo.h
+)
+
+set (COMPONENTS_FILES
+	spawn.h
+	container.h
+    contact.h
+    controllable.h
+    motion.h
+    paralysis.h
+    poison.h
+    showable.h
+    sleep.h
+    statsmod.h
+    stackable.h
+    tag.h
+    talkable.h
+    transform.h
+    updatable.h
+	monster.h
+)
+
+set (SYSTEM_FILES
+    collision.h
+    stats.h
+    motion.h
+    updatable.h
+    stats.cpp
+    updatable.cpp
+    collision.cpp
+    motion.cpp
+	spawn.h
+	spawn.cpp
+)
+
+set (GAME_FILES
+	main.cpp
+	main.h
+	game.h
+	game.cpp
+	vari.h
+	ecs.h
+	python.h
+	ecs.cpp
+	db.h
+)
+
+set (GENERATED_FILES
+	resource.rc
+	version.rc
+	version.cpp
+	include/version.h
+)
+
+list(TRANSFORM DB_FILES PREPEND "src/db/")
+list(TRANSFORM PYTHON_FILES PREPEND "src/python/")
+list(TRANSFORM ABSTRACT_FILE PREPEND "src/abstract/")
+list(TRANSFORM DEF_FILES PREPEND "src/def/")
+list(TRANSFORM PYTHON_MODULES_FILES PREPEND "src/python/modules/")
+list(TRANSFORM COMPONENTS_FILES PREPEND "src/components/")
+list(TRANSFORM SYSTEM_FILES PREPEND "src/systems/")
+list(TRANSFORM GAME_FILES PREPEND "src/game/")
+list(TRANSFORM PYTHON_CLASS_FILES PREPEND "src/python/classes/")
+list(TRANSFORM GENERATED_FILES PREPEND "${CMAKE_CURRENT_BINARY_DIR}/generated/")
+
+source_group("db" FILES ${DB_FILES})
+source_group("python" FILES ${PYTHON_FILES})
+source_group("abstract" FILES ${ABSTRACT_FILE})
+source_group("def" FILES ${DEF_FILES})
+source_group("python/modules" FILES ${PYTHON_MODULES_FILES})
+source_group("components" FILES ${COMPONENTS_FILES})
+source_group("systems" FILES ${SYSTEM_FILES})
+source_group("game" FILES ${GAME_FILES})
+source_group("generated" FILES ${GENERATED_FILES})
+source_group("python/classes" FILES ${PYTHON_CLASS_FILES})
+
+set(NCPROJECT_SOURCES
+	${CMAKE_CURRENT_BINARY_DIR}/generated/include/version.h
+	${DB_FILES}
+	${PYTHON_FILES}
+	${ABSTRACT_FILE}
+	${DEF_FILES}
+	${PYTHON_MODULES_FILES}
+	${SYSTEM_FILES}
+	${COMPONENTS_FILES}
+	${GAME_FILES}
+	${GENERATED_FILES}
+	${PYTHON_CLASS_FILES}
+)
+
+function (callback_before_target)
+	find_package(EnTT CONFIG REQUIRED)
+	find_package(Python3 COMPONENTS Development REQUIRED)
+	find_package(pybind11 CONFIG REQUIRED)
+	find_package(nlohmann_json CONFIG REQUIRED)
+endfunction()
+
+function (callback_after_target)
+	target_link_libraries(${NCPROJECT_EXE_NAME} PRIVATE  nlohmann_json::nlohmann_json Python3::Python pybind11::module pybind11::embed EnTT::EnTT)
+endfunction()
+
+# Don't edit beyond this line
+if(CMAKE_SYSTEM_NAME STREQUAL "Android")
+	return()
+endif()
+
 cmake_minimum_required(VERSION 3.13)
+project(${NCPROJECT_NAME})
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
-get_filename_component(PARENT_SOURCE_DIR ${CMAKE_SOURCE_DIR} DIRECTORY)
-get_filename_component(PARENT_BINARY_DIR ${CMAKE_BINARY_DIR} DIRECTORY)
 
-include(package_info)
-include(package_check_info)
-if(COMMAND callback_start)
-	callback_start()
-endif()
+find_path(NCPROJECT_DIR cmake/project_main.cmake
+	PATHS ${nCine_DIR} $ENV{NCINE_DIR}
+	PATH_SUFFIXES project ../project ../../../project ../../../share/ncine/project
+	NO_CMAKE_FIND_ROOT_PATH # For Emscripten
+	DOC "Path to the nCine template project scripts")
 
-project(${PACKAGE_NAME})
-
-include(package_options)
-
-include(find_ncine)
-if(NOT NCINE_DYNAMIC_LIBRARY)
-	include(package_imported_targets)
-endif()
-if(NOT ANDROID AND NOT EMSCRIPTEN AND NCINE_WITH_QT5)
-	find_package(Qt5 COMPONENTS Widgets)
-endif()
-
-if(NOT IS_DIRECTORY ${PACKAGE_DATA_DIR})
-	if(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/data AND IS_DIRECTORY ${CMAKE_SOURCE_DIR}/icons)
-		set(PACKAGE_DATA_DIR ${CMAKE_SOURCE_DIR})
-		message(STATUS "${PACKAGE_NAME} data directory not found at ${PACKAGE_DATA_DIR}: using source directory for data")
-	else()
-		message(WARNING "${PACKAGE_NAME} data directory not found at: ${PACKAGE_DATA_DIR}")
-	endif()
+if(IS_DIRECTORY ${NCPROJECT_DIR})
+	include(${NCPROJECT_DIR}/cmake/project_main.cmake)
 else()
-	message(STATUS "${PACKAGE_NAME} data directory: ${PACKAGE_DATA_DIR}")
-endif()
-
-include(package_get_version)
-
-if(COMMAND callback_before_target)
-	callback_before_target()
-endif()
-
-add_executable(${PACKAGE_EXE_NAME} WIN32 ${PACKAGE_SOURCES})
-include(package_generated_sources)
-target_sources(${PACKAGE_EXE_NAME} PRIVATE ${GENERATED_SOURCES})
-
-include(omt_dependences)
-
-if(NOT DEFAULT_DATA_DIR_DIST) # Don't set the startup project if it wouldn't find the data directory
-	set_property(DIRECTORY ${CMAKE_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PACKAGE_EXE_NAME})
-endif()
-
-target_include_directories(${PACKAGE_EXE_NAME} PRIVATE ${PACKAGE_INCLUDE_DIRS})
-if(IS_DIRECTORY ${GENERATED_INCLUDE_DIR})
-	target_include_directories(${PACKAGE_EXE_NAME} PRIVATE ${GENERATED_INCLUDE_DIR})
-endif()
-
-#target_link_libraries(${PACKAGE_EXE_NAME} PRIVATE ncine::ncine_main ncine::ncine)
-target_link_libraries(${PACKAGE_EXE_NAME} PRIVATE ncine::ncine)
-
-if(WIN32 AND NCINE_WTH_QT5)
-	target_link_libraries(${PACKAGE_EXE_NAME} PRIVATE Qt5::WinMain)
-elseif(MINGW)
-	target_link_libraries(${PACKAGE_EXE_NAME} PRIVATE mingw32)
-endif()
-
-target_compile_definitions(${PACKAGE_EXE_NAME} PRIVATE "$<$<CONFIG:Debug>:${PACKAGE_UPPER_NAME}_DEBUG>")
-
-if(MSVC)
-	target_compile_options(${PACKAGE_EXE_NAME} PRIVATE /MP)
-endif()
-
-if(EMSCRIPTEN)
-	target_compile_options(${PACKAGE_EXE_NAME} PRIVATE "SHELL:--preload-file ${PACKAGE_DATA_DIR}/data@ --no-heap-copy")
-	target_link_options(${PACKAGE_EXE_NAME} PRIVATE "SHELL:--preload-file ${PACKAGE_DATA_DIR}/data@ --no-heap-copy")
-	configure_file(${CMAKE_SOURCE_DIR}/emscripten_shell.html.in ${CMAKE_BINARY_DIR}/${PACKAGE_EXE_NAME}.html @ONLY)
-	if(EXISTS ${PACKAGE_DATA_DIR}/icons/icon.ico)
-		file(COPY ${PACKAGE_DATA_DIR}/icons/icon.ico DESTINATION ${CMAKE_BINARY_DIR})
-		file(RENAME ${CMAKE_BINARY_DIR}/icon.ico ${CMAKE_BINARY_DIR}/favicon.ico)
+	if(NOT DEFINED nCine_DIR AND "$ENV{NCINE_DIR}" STREQUAL "")
+		message(FATAL_ERROR "Set the nCine_DIR CMake variable or the NCINE_DIR environment variable to a valid nCine directory.")
+	elseif(DEFINED nCine_DIR)
+		message(FATAL_ERROR "The nCine_DIR CMake variable \"${nCine_DIR}\" is not a valid nCine directory.")
+	elseif(NOT "$ENV{NCINE_DIR}" STREQUAL "")
+		message(FATAL_ERROR "The NCINE_DIR environment variable \"$ENV{NCINE_DIR}\" is not a valid nCine directory.")
 	endif()
-endif()
-
-if(COMMAND callback_after_target)
-	callback_after_target()
-endif()
-
-include(package_installation)
-
-if(DEFAULT_DATA_DIR_DIST)
-	if(MSVC OR APPLE)
-		# Relative path from tests to data on Windows and OS X, where the user can choose the installation directory
-		file(RELATIVE_PATH PACKAGE_DEFAULT_DATA_DIR
-			${CMAKE_INSTALL_PREFIX}/${RUNTIME_INSTALL_DESTINATION}
-			${CMAKE_INSTALL_PREFIX}/${DATA_INSTALL_DESTINATION}) # Always strips trailing slash
-		set(PACKAGE_DEFAULT_DATA_DIR "${PACKAGE_DEFAULT_DATA_DIR}/")
-	else()
-		set(PACKAGE_DEFAULT_DATA_DIR "${CMAKE_INSTALL_PREFIX}/${DATA_INSTALL_DESTINATION}/")
-	endif()
-elseif(NOT PACKAGE_DEFAULT_DATA_DIR)
-	set(PACKAGE_DEFAULT_DATA_DIR "${PACKAGE_DATA_DIR}/data/")
-endif()
-
-if(PACKAGE_DEFAULT_DATA_DIR)
-	file(TO_CMAKE_PATH "${PACKAGE_DEFAULT_DATA_DIR}" PACKAGE_DEFAULT_DATA_DIR) # Always strips trailing slash
-	set(PACKAGE_DEFAULT_DATA_DIR "${PACKAGE_DEFAULT_DATA_DIR}/")
-
-	message(STATUS "Default data directory: ${PACKAGE_DEFAULT_DATA_DIR}")
-	target_compile_definitions(${PACKAGE_EXE_NAME} PRIVATE "PACKAGE_DEFAULT_DATA_DIR=\"${PACKAGE_DEFAULT_DATA_DIR}\"")
-endif()
-
-include(package_copy_targets)
-include(package_build_android)
-include(package_strip_binaries)
-if(COMMAND callback_end)
-	callback_end()
 endif()
