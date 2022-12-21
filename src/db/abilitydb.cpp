@@ -22,7 +22,6 @@ bool AbilityDb::Init(nctl::String path)
 	TableHeader header;
 
 	auto file = ncine::IFile::createFileHandle(path.data());
-	file->setExitOnFailToOpen(false);
 	file->setCloseOnDestruction(true);
 
 	file->open(ncine::IFile::OpenMode::BINARY | ncine::IFile::OpenMode::READ);

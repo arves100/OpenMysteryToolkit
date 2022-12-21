@@ -23,7 +23,6 @@ bool GameInfo::Load(nctl::String path)
 		return false;
 	}
 
-	asset->setExitOnFailToOpen(false);
 	asset->open(ncine::IFile::OpenMode::READ | ncine::IFile::OpenMode::BINARY);
 
 	if (!asset->isOpened())

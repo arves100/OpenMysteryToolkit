@@ -166,13 +166,13 @@ set(NCPROJECT_SOURCES
 
 function (callback_before_target)
 	find_package(EnTT CONFIG REQUIRED)
-	find_package(Python3 COMPONENTS Development REQUIRED)
+	#find_package(Python3 COMPONENTS Development REQUIRED)
 	find_package(pybind11 CONFIG REQUIRED)
 	find_package(nlohmann_json CONFIG REQUIRED)
 endfunction()
 
 function (callback_after_target)
-	target_link_libraries(${NCPROJECT_EXE_NAME} PRIVATE  nlohmann_json::nlohmann_json Python3::Python pybind11::module pybind11::embed EnTT::EnTT)
+	target_link_libraries(${NCPROJECT_EXE_NAME} PRIVATE  nlohmann_json::nlohmann_json pybind11::module pybind11::embed EnTT::EnTT)
 endfunction()
 
 # Don't edit beyond this line
