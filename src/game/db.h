@@ -28,7 +28,7 @@ class Db final
 			return false;
 		}
 
-		if (!monster_.Init(ncine::fs::joinPath(db, "monsters.db")))
+		if (!monster_.Init(ncine::fs::joinPath(db, "entities.db")))
 		{
 			LOGE("Unable to load monster database!");
 			return false;

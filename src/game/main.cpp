@@ -41,10 +41,11 @@ void OpenMysteryToolkit::onPreInit(ncine::AppConfiguration &config)
 	#endif
 #endif
 
-	config.isResizable = true;
+	config.resizable = true;
 
 #ifdef OPENMYSTERYTOOLKIT_DEBUG
 	config.withDebugOverlay = true;
+	config.fileLogLevel = ncine::ILogger::LogLevel::DEBUG;
 	config.consoleLogLevel = ncine::ILogger::LogLevel::DEBUG;
 #else
 	config.consoleLogLevel = ncine::ILogger::LogLevel::ERROR;
@@ -60,6 +61,15 @@ void OpenMysteryToolkit::onPreInit(ncine::AppConfiguration &config)
 
 	config.windowTitle = str;
 	config.windowIconFilename = "icon48.png";
+
+	if (config.argc() < 2)
+	{
+		// SHOW MESSAGE BOX INVALID PARAMETERS
+		ncine::theApplication().quit();
+		return;
+	}
+
+	game_ = config.argv(1);
 }
 
 void OpenMysteryToolkit::onKeyReleased(const ncine::KeyboardEvent &event)
@@ -71,7 +81,7 @@ void OpenMysteryToolkit::onInit()
 {
 	g_game = nctl::makeShared<Game>();
 
-	g_game->Load("pue"); // TODO
+	g_game->Load(game_);
 
 	if (!theGame().IsLoaded())
 		ncine::theApplication().quit();
@@ -80,4 +90,9 @@ void OpenMysteryToolkit::onInit()
 void OpenMysteryToolkit::onFrameStart()
 {
 	theGame().Update(ncine::theApplication().interval());
+}
+
+void OpenMysteryToolkit::onPostUpdate()
+{
+
 }

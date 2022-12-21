@@ -9,6 +9,8 @@
 #include <ncine/IAppEventHandler.h>
 #include <ncine/IInputEventHandler.h>
 
+#include <nctl/String.h>
+
 #include <game/game.h>
 
 namespace ncine {
@@ -26,4 +28,8 @@ class OpenMysteryToolkit final :
 	void onInit() override;
 	void onKeyReleased(const ncine::KeyboardEvent &event) override;
 	void onFrameStart() override;
+	void onPostUpdate() override;
+
+  private:
+	nctl::String game_;
 };
