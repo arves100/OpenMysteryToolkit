@@ -36,11 +36,13 @@ class Python
 
 			entrypoint_ = pybind11::module_::import(ep.data());
 		}
-		catch (...)
+	    catch (const pybind11::error_already_set& e)
 		{
+			LOGE_X("Unable to import the script %s!\n%s", ep.data(), e.what());
 			return false;
 		}
 
+		epname_ = ep;
 		return true;
 	}
 
@@ -59,11 +61,12 @@ class Python
 	void Call(nctl::String name, Args... args)
 	{
 		PythonLink link;
-		if (link.Link(entrypoint_, name))
+		if (link.Link(epname_, entrypoint_, name))
 			link.Call(args...);
 	}
 
   protected:
+	nctl::String epname_;
 	pybind11::module_ entrypoint_;
 	bool pyInit_;
 };
