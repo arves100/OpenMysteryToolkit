@@ -9,6 +9,9 @@
 #include <cstdint>
 #include <ncine/IFile.h>
 
+/*!
+* Information of the statistics of an entity
+*/
 struct Stats
 {
     int64_t hp;

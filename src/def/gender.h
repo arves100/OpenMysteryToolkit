@@ -6,6 +6,9 @@
 */
 #pragma once
 
+/*!
+* All types of genders
+*/
 enum class Gender
 {
     Male,
@@ -14,6 +17,9 @@ enum class Gender
 };
 
 namespace AllowedGenders {
+	/*!
+	* Bitwise flags for the allowed genders
+	*/
 	enum _
 	{
 		Unknown = 0,

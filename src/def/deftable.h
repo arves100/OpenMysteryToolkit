@@ -8,11 +8,19 @@
 
 #include <cstdint>
 
-/*
-    [MAGIC] [SIZE] [DATA]
+/*!
+* Definition of a simple table header
+* @note [MAGIC] [SIZE] [DATA]
 */
 struct TableHeader
 {
+	/*!
+	* Magic value
+	*/
 	uint32_t magic;
+
+	/*!
+	* Data count
+	*/
 	uint32_t size;
 };

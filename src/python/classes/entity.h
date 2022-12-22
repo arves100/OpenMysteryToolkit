@@ -8,16 +8,36 @@
 
 #include <entt/entt.hpp>
 
+/*!
+* Python implementation of an entity
+*/
 class PyEntity
 {
   public:
-	PyEntity(entt::handle h)
+	/*!
+	* Default constructor
+	* @param h Entity handle
+	*/
+	explicit PyEntity(entt::handle h)
 	    : handle_(h) {}
 
+	/*!
+	* Gets the ID of this entity
+	*/
 	entt::entity GetId() const { return handle_.entity(); }
 
 	// tag (we suppose name will never be changed by the C++ code)
+
+	/*!
+	* Gets the current tag
+	* @return Tag
+	*/
 	const std::string &GetTag() const { return tag_; }
+
+	/*!
+	* Sets a tag for this entity
+	* @param tag Tag to set
+	*/
 	void SetTag(std::string tag);
 
 	bool IsShow();
@@ -25,8 +45,13 @@ class PyEntity
 	void Hide();
 
   protected:
+	/*!
+	* Entity handle
+	*/
 	entt::handle handle_;
 
-	// cache
+	/*!
+	* Tag cache
+	*/
 	std::string tag_;
 };

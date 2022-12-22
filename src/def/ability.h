@@ -8,6 +8,9 @@
 
 #include <python/link.h>
 
+/*!
+* Definition of a simple ability
+*/
 struct Ability
 {
 	// def on_cycle(entity: Entity, map: Entity)

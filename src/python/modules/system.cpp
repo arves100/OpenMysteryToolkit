@@ -9,11 +9,17 @@
 #include <game/game.h>
 #include <version.h>
 
+/*!
+* Gets the current cycle of the game
+*/
 static auto cycles()
 {
-	theGame().GetCycles();
+	return theGame().GetCycles();
 }
 
+/*!
+* Shuts down the application
+*/
 static void quit()
 {
 	ncine::theApplication().quit();

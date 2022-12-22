@@ -8,4 +8,8 @@
 
 #include <python/inc.h>
 
+/*!
+* Python export of the OMT module
+* @return OMT module object
+*/
 extern "C" PyObject * pybind11_init_impl_omt();

@@ -12,7 +12,7 @@
 #include <game/python.h>
 #include <game/db.h>
 
-/*
+/*!
  * @class Game Main game
  * Concepts:
  *	1. Once all characters have updated a cycle ticks (different from a render cycle)
@@ -59,17 +59,35 @@ class Game final : public ECS, public Vari
 	*/
 	void Advance();
 
-
-
-
   private:
+	/*!
+	* Name of the game
+	*/
 	nctl::String name_;
+
+	/*!
+	* Information of the game
+	*/
 	GameInfo info_;
+
+	/*!
+	* If the game was loaded or not
+	*/
 	bool loaded_;
 
+	/*!
+	* Number of game cycles in the specific map (this can potentially implement an undo operation)
+	*/
 	uint64_t cycles_;
 
+	/*!
+	* Database container
+	*/
 	Db db_;
+
+	/*!
+	* Python link
+	*/
 	Python python_;
 };
 

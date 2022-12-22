@@ -9,11 +9,25 @@
 #include <cstdint>
 #include <string>
 
-#include <def/gender.h>
+#include <def/defaults.h>
 
+/*!
+* Definition of an item
+*/
 struct Item
 {
-    uint64_t id;
+	/*!
+	* Item ID
+	*/
+    ItemId id;
+
+	/*!
+	* Item name
+	*/
     std::string name;
-    bool compressable;
+
+	/*!
+	* If the item is stackable
+	*/
+	bool stackable;
 };

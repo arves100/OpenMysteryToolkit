@@ -8,6 +8,9 @@
 
 #include <cstdint>
 
+/*!
+* Definition of the type of informations that something has to do inside a cycle
+*/
 struct CycleInfo
 {
 	uint64_t done;

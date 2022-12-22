@@ -6,6 +6,7 @@
 */
 #include <python/modules.h>
 #include <python/omt.h>
+#include <python/link.h>
 
 PYBIND11_EMBEDDED_MODULE(omt, m)
 {
@@ -24,3 +25,6 @@ PYBIND11_EMBEDDED_MODULE(omt, m)
 	auto ent = m.def_submodule("entity", "Entity functionalities");
 	MOD_CALL(entity, ent);
 }
+
+// static declaration!
+pybind11::module_ PythonLink::inspect_ = pybind11::module_();

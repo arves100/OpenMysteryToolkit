@@ -9,6 +9,11 @@
 #include <nctl/String.h>
 #include <optional>
 
+#include <def/monsterinfo.h>
+
+/*!
+* 
+*/
 class IDb
 {
   public:

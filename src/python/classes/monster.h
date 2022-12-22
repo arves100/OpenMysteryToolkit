@@ -10,10 +10,17 @@
 #include <python/classes/entity.h>
 #include <def/defaults.h>
 
+/*!
+* Python implementation of a monster
+*/
 class PyMonster : public PyEntity
 {
   public:
-	PyMonster(entt::handle h)
+	/*!
+	* Default constructors
+	* @param h Entity handle
+	*/
+	explicit PyMonster(entt::handle h)
 	    : PyEntity(h) {}
 
 	MonsterId GetDbId() const;
@@ -55,6 +62,10 @@ class PyMonster : public PyEntity
 	const std::string &GetName() const;
 	void SetName(std::string name);
 
+	/*!
+	* Links a function when the entity is spawned
+	* @param fnc Function pointer
+	*/
 	bool LinkOnSpawn(pybind11::function& fnc);
 	bool LinkOnDie(pybind11::function &fnc);
 	bool LinkOnMove(pybind11::function &fnc);

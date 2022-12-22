@@ -6,6 +6,9 @@
 */
 #pragma once
 
+/*!
+* All types of directions
+*/
 enum class Direction
 {
 	Up,

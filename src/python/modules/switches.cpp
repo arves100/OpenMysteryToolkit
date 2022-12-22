@@ -8,11 +8,21 @@
 #include <game/game.h>
 #include <def/defaults.h>
 
+/*!
+* Gets a switch
+* @param id Switch ID
+* @return The switch value
+*/
 static auto get(SwitchId id)
 {
 	return theGame().GetSwitch(id);
 }
 
+/*!
+* Sets a switch
+* @param id Switch ID
+* @param value Switch value
+*/
 static void set(SwitchId id, bool value)
 {
 	theGame().SetSwitch(id, value);

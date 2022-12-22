@@ -6,6 +6,9 @@
 */
 #pragma once
 
+/*!
+* Types of events when the script will be activated
+*/
 enum class ScriptActivation
 {
 	NextShot,

@@ -10,10 +10,17 @@
 
 #include <nctl/Array.h>
 
+/*!
+* This class manages all the variables that a game developer can use, in a similar
+* style of RPG Maker it contains switches (booleans) and flags (numbers)
+*/
 class Vari
 {
   public:
-	Vari()
+	/*!
+	* Default constructor
+	*/
+	explicit Vari()
 	    : switches_(SWITCH_MAX, nctl::ArrayMode::FIXED_CAPACITY),
 	      flags_(FLAG_MAX, nctl::ArrayMode::FIXED_CAPACITY)
 	{}
@@ -69,6 +76,13 @@ class Vari
 	}
 
   private:
+	/*!
+	* Flags container
+	*/
 	nctl::Array<Flag> flags_;
+
+	/*!
+	* Switches container
+	*/
 	nctl::Array<bool> switches_;
 };

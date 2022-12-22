@@ -8,6 +8,9 @@
 
 #include <python/link.h>
 
+/*!
+* Link of a status
+*/
 struct StatusLink
 {
     // def status_start(entity: Entity, attacker: Entity) -> None

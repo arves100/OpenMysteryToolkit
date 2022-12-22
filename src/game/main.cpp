@@ -22,6 +22,10 @@ Game &theGame()
 	return *g_game;
 }
 
+/*!
+* This function instructs the nCine to create the game application
+* @return An unique pointer of the game class
+*/
 nctl::UniquePtr<ncine::IAppEventHandler> createAppEventHandler()
 {
 	return nctl::makeUnique<OpenMysteryToolkit>();

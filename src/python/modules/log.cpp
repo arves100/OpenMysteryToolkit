@@ -8,21 +8,37 @@
 
 #include <ncine/common_macros.h>
 
+/*!
+* Prints an error log
+* @param fmt String to print
+*/
 static void logerr(std::string fmt)
 {
 	LOGE_X("%s", fmt.c_str());
 }
 
+/*!
+* Prints a warning log
+* @param fmt String to print
+*/
 static void logwarn(std::string fmt)
 {
 	LOGW_X("%s", fmt.c_str());
 }
 
+/*!
+* Prints an information log
+* @param fmt String to print
+*/
 static void loginfo(std::string fmt)
 {
 	LOGI_X("%s", fmt.c_str());
 }
 
+/*!
+* Prints a debug log
+* @param fmt String to print
+*/
 static void logdebug(std::string fmt)
 {
 	LOGD_X("%s", fmt.c_str());

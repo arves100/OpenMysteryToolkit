@@ -19,17 +19,34 @@ class AppConfiguration;
 
 }
 
+/*!
+* The actual nCine videogame
+*/
 class OpenMysteryToolkit final :
     public ncine::IAppEventHandler,
     public ncine::IInputEventHandler
 {
   public:
+	/// Called once before initialization to setup the application
+	/*! \warning At this stage it is only safe to modify the `config` object.
+	 *  No other engine API calls should be made. */
 	void onPreInit(ncine::AppConfiguration &config) override;
+
+	/// Called once on application initialization
 	void onInit() override;
+
+	/// Callback function called every time a key is released
 	void onKeyReleased(const ncine::KeyboardEvent &event) override;
+
+	/// Called at the start of each frame
 	void onFrameStart() override;
+
+	/// Called every time the scenegraph has been traversed and all nodes have been transformed
 	void onPostUpdate() override;
 
   private:
+	/*!
+	* Game name
+	*/
 	nctl::String game_;
 };
