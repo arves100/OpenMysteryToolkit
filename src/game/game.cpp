@@ -72,7 +72,23 @@ void Game::Load(nctl::String name)
 
 void Game::Update(float delta)
 {
-	UpdateSystems(0);
+	// 1.
+	// TODO: AI FSM
+
+	// 2. System updates
+	UpdateSystems(cycles_);
+
+	// 3. Physics updates
+	// TODO: BOX2D systems
+}
+
+void Game::Render(float delta)
+{
+	// 5. Coroutine update
+	// TODO: Implement cppcoro
+
+	// 6. Render updates
+	// TODO: Render systems
 }
 
 void Game::Advance()

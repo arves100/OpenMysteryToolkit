@@ -44,9 +44,15 @@ class Game final : public ECS, public Vari
 
 	/*!
 	* Updates the game components
-	* @param delta Delta time
+	* @param step Physics step
 	*/
-	void Update(float delta);
+	void Update(float step);
+
+	/*!
+	* Renders the game
+	* @param delta Render delta time
+	*/
+	void Render(float delta);
 
 	/*!
 	* Gets the current cycles of the game

@@ -41,12 +41,14 @@ class OpenMysteryToolkit final :
 	/// Called at the start of each frame
 	void onFrameStart() override;
 
-	/// Called every time the scenegraph has been traversed and all nodes have been transformed
-	void onPostUpdate() override;
-
   private:
 	/*!
 	* Game name
 	*/
 	nctl::String game_;
+
+	/*!
+	* Physics accumulator
+	*/
+	float accumulator_;
 };

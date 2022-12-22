@@ -68,7 +68,8 @@ void OpenMysteryToolkit::onPreInit(ncine::AppConfiguration &config)
 
 	if (config.argc() < 2)
 	{
-		// SHOW MESSAGE BOX INVALID PARAMETERS
+		// TODO: show something that the parameters were invalid
+		LOGE("Invalid parameters!");
 		ncine::theApplication().quit();
 		return;
 	}
@@ -89,14 +90,54 @@ void OpenMysteryToolkit::onInit()
 
 	if (!theGame().IsLoaded())
 		ncine::theApplication().quit();
+
+	//theGame().Update(0.0f, currentWorldState_);
 }
 
 void OpenMysteryToolkit::onFrameStart()
 {
-	theGame().Update(ncine::theApplication().interval());
-}
+	/*
+	* Loop flow chart based from Unity game loop (Fixed time step stage)
+	* NOTE: The update function is called during the FPS updates, having this code here tides up the physics core to the FPS of the application
+	* 
+	* -- Physics update (30 TPS)
+	* 0. Determine if the physics tps has been ticked
+	* 1. Update AI (State machines)
+	* 2. Update systems based from the current cycles (this counts as Unity physics update function)
+	* 3. Run physics/box2d update
+	* 4. Goto 0 if the physics tps has been ticked again
+	*
+	* -- Render update (Variable FPS)
+	* 5. Run coroutine updates
+	* 6. Update the entity animation time for drawing
+	* 7. Render scene (this is done by nCine after onFrameStart())
+	*
+	* We don't have the entity update here because we use the accumulator concept, updating the physics by the accumulator tides the physics to the render time
+	*/
 
-void OpenMysteryToolkit::onPostUpdate()
-{
+	auto frameTime = ncine::theApplication().interval();
+	static constexpr float fixedDelta = 1.0f / 30.0f; // Physics TPS
 
+	accumulator_ += frameTime;
+
+	while (accumulator_ >= fixedDelta) // 0. and 4.
+	{
+		// updates the physics (eg: current position of the player)
+
+		//previousWorldState_ = currentWorldState_;
+		//theGame().Update(fixedDelta, currentWorldState_);
+
+		theGame().Update(fixedDelta);
+		accumulator_ -= fixedDelta;
+	} 
+
+	//const auto alpha = accumulator_ / fixedDelta;
+	//const auto renderWorldState = currentWorldState_ * alpha + previousWorldState_ * (1.0f - alpha);
+
+	// updates the render (eg: current animation time of the movement of the player)
+	//theGame().Render(renderWorldState);
+
+	theGame().Render(frameTime);
+
+	// 7. --- end
 }
